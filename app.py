@@ -22,12 +22,15 @@ def get_image_url(url):
 
 
 def decode_image(base64_string):
-    """Convert Base64 string to an image."""
+    """Convert Base64 string to an image, handling errors safely."""
     try:
+        base64_string = base64_string.strip()  # Remove unwanted spaces/newlines
         image_bytes = base64.b64decode(base64_string)
-        return Image.open(BytesIO(image_bytes))
-    except Exception:
-        return None
+        image = Image.open(BytesIO(image_bytes))
+        return image
+    except Exception as e:
+        print("❌ Base64 Decoding Error:", e)  # Debugging
+        return None  # Return None if invalid
 
 # App Layout
 st.set_page_config(layout="wide")
@@ -44,7 +47,7 @@ df = df.sort_values(by="INCENTIVE", ascending=False).reset_index(drop=True)
 
 # Sidebar for ranking
 st.sidebar.header("📊 Staff Ranking")
-st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE']])
+st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
 
 # Slideshow Controls
 if "index" not in st.session_state:
