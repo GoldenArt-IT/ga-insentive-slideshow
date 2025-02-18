@@ -33,7 +33,7 @@ def decode_image(base64_string):
 st.set_page_config(layout="wide")
 
 conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read(worksheet="DATA", ttl=5)
+df = conn.read(worksheet="DATA", ttl=10)
 df = df.dropna(thresh=2)
 df = df.sort_values(by="INCENTIVE", ascending=False).reset_index(drop=True)
 
@@ -70,8 +70,8 @@ st.metric(label="💰 Incentive Earned", value=f"${incentive_value:,.2f}")
 
 # Slideshow Controls
 st.sidebar.markdown("### ⏳ Auto-Slideshow")
-auto_slide = st.sidebar.checkbox("Enable Slideshow", value=False)
-slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 2)
+auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
+slide_delay = st.sidebar.slider("Slide Delay (seconds)", 5, 10, 2)
 
 col1, col2, col3 = st.columns([1, 2, 1])
 
@@ -84,5 +84,9 @@ if col2.button("⏭️ Next"):
 # Auto-slide
 if auto_slide:
     time.sleep(slide_delay)
+<<<<<<< HEAD
     st.session_state.index = (st.session_state.index + 1) % len(df)
+=======
+    st.session_state.index = (st.session_state.index + 1) % 10
+>>>>>>> df31747bfbf95b7ff42666389c07f6499c83b71f
     st.rerun()
