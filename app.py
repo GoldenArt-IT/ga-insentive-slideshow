@@ -84,9 +84,5 @@ if col2.button("⏭️ Next"):
 # Auto-slide
 if auto_slide:
     time.sleep(slide_delay)
-<<<<<<< HEAD
-    st.session_state.index = (st.session_state.index + 1) % len(df)
-=======
     st.session_state.index = (st.session_state.index + 1) % 10
->>>>>>> df31747bfbf95b7ff42666389c07f6499c83b71f
     st.rerun()
