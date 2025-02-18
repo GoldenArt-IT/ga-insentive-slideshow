@@ -59,7 +59,7 @@ auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
 slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
 
 # Main Page View
-st.title("🏆 Staff Incentive Dashboard")
+st.title("🏆 Top 10 Staff Terbaik GA !")
 st.subheader(f"🌟 {staff_name}")
 
 # Display Image
