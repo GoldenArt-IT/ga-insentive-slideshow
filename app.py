@@ -39,7 +39,7 @@ st.title("🏆 Staff Incentive Dashboard")
 
 # Load data
 conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read(worksheet="DATA", ttl=5)
+df = conn.read(worksheet="DATA", ttl=10)
 df = df.dropna(thresh=2)
 
 # Sort by incentive (Descending)
