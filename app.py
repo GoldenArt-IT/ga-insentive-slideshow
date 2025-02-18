@@ -87,13 +87,13 @@ with display2:
     st.markdown("<h1 style='text-align: left;'> " f"RM {department_incentive:,.2f}" "</h1>", unsafe_allow_html=True)
 
 # Buttons
-col1, col2, col3 = st.columns([0.4, 0.5, 2])
+# col1, col2, col3 = st.columns([0.5, 0.5, 2])
 
-if col1.button("⏮️ Previous"):
-    st.session_state.index = (st.session_state.index - 1) % len(df)
+# if col1.button("⏮️ Previous"):
+#     st.session_state.index = (st.session_state.index - 1) % len(df)
 
-if col2.button("⏭️ Next"):
-    st.session_state.index = (st.session_state.index + 1) % len(df)
+# if col2.button("⏭️ Next"):
+#     st.session_state.index = (st.session_state.index + 1) % len(df)
 
 # Auto-slide
 if auto_slide:
