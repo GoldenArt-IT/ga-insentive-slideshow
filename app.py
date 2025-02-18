@@ -94,4 +94,4 @@ if col2.button("⏭️ Next"):
 if auto_slide:
     time.sleep(slide_delay)
     st.session_state.index = (st.session_state.index + 1) % 5
-    st.experimental_rerun()
+    st.rerun()
