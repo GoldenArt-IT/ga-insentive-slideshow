@@ -50,11 +50,16 @@ incentive_value = 0.00 if pd.isna(incentive_value) else float(incentive_value)
 
 #---------------------------------------------------------UI DESIGN-------------------------------------------------------------
 
-st.title("🏆 Staff Incentive Dashboard")
-
+# Side Bar
 st.sidebar.header("📊 Staff Ranking")
 st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
+st.sidebar.markdown("### ⏳ Auto-Slideshow")
 
+auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
+slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
+
+# Main Page View
+st.title("🏆 Staff Incentive Dashboard")
 st.subheader(f"🌟 {staff_name}")
 
 # Display Image
@@ -68,11 +73,7 @@ else:
 
 st.metric(label="💰 Incentive Earned", value=f"${incentive_value:,.2f}")
 
-# Slideshow Controls
-st.sidebar.markdown("### ⏳ Auto-Slideshow")
-auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
-slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
-
+# Buttons
 col1, col2, col3 = st.columns([1, 2, 1])
 
 if col1.button("⏮️ Previous"):
