@@ -45,8 +45,11 @@ if "index" not in st.session_state:
 staff_name = df.iloc[st.session_state.index]["STAFF NAME"]
 image_data = df.iloc[st.session_state.index]["PICTURE"]
 incentive_value = df.iloc[st.session_state.index]['INCENTIVE']
+department_value = df.iloc[st.session_state.index]['DEPARTMENT']
 incentive_value = 0.00 if pd.isna(incentive_value) else float(incentive_value)
 
+department_totals = df.groupby("DEPARTMENT")["INCENTIVE"].sum().reset_index()
+department_incentive = department_totals[department_totals["DEPARTMENT"] == department_value]["INCENTIVE"].values[0]
 
 #---------------------------------------------------------UI DESIGN-------------------------------------------------------------
 
@@ -60,21 +63,32 @@ slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
 
 # Main Page View
 st.title("🏆 Top 10 Staff Terbaik GA !")
-st.subheader(f"🌟 {staff_name}")
 
-# Display Image
-if pd.isna(image_data) or image_data.strip() == "":
-    st.write("🚫 No Image Available")
-elif image_data.startswith("http"):
-    st.image(get_image_url(image_data), width=300)
-else:
-    image = decode_image(image_data)
-    st.image(image, width=300) if image else st.write("🚫 No Image Available")
+display1, display2, display3 = st.columns([1, 2, 1])
 
-st.metric(label="💰 Incentive Earned", value=f"${incentive_value:,.2f}")
+with display1:
+    st.subheader(f"🌟 {staff_name}")
+
+    # Display Image
+    if pd.isna(image_data) or image_data.strip() == "":
+        st.write("🚫 No Image Available")
+    elif image_data.startswith("http"):
+        st.image(get_image_url(image_data), width=300)
+    else:
+        image = decode_image(image_data)
+        st.image(image, width=300) if image else st.write("🚫 No Image Available")
+
+with display2:
+    st.markdown("<h3 style='text-align: left;'>💰 Duit yang Di Terima !</h3>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: left;'> " f"RM {incentive_value:,.2f}" "</h1>", unsafe_allow_html=True)
+    # st.metric(label="", value=f"${incentive_value:,.2f}")
+    # st.metric(label="💰 Incentive Earned", value=f"${incentive_value:,.2f}")
+
+    st.markdown("<h3 style='text-align: left;'>📈 Total Duit dalam Department !</h3>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: left;'> " f"RM {department_incentive:,.2f}" "</h1>", unsafe_allow_html=True)
 
 # Buttons
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns([0.4, 0.5, 2])
 
 if col1.button("⏮️ Previous"):
     st.session_state.index = (st.session_state.index - 1) % len(df)
@@ -85,5 +99,5 @@ if col2.button("⏭️ Next"):
 # Auto-slide
 if auto_slide:
     time.sleep(slide_delay)
-    st.session_state.index = (st.session_state.index + 1) % 10
+    st.session_state.index = (st.session_state.index + 1) % 10  # Loop Top 10 Staff Only
     st.rerun()
