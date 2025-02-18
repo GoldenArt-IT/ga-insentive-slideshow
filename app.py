@@ -63,12 +63,11 @@ slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
 
 # Main Page View
 st.title("🏆 Top 10 Staff Terbaik GA !")
+st.subheader(f"🌟 {staff_name}")
 
 display1, display2, display3 = st.columns([1, 2, 1])
 
 with display1:
-    st.subheader(f"🌟 {staff_name}")
-
     # Display Image
     if pd.isna(image_data) or image_data.strip() == "":
         st.write("🚫 No Image Available")
