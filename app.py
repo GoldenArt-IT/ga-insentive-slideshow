@@ -65,7 +65,7 @@ slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
 st.title("🏆 Top 10 Staff Terbaik GA !")
 st.subheader(f"🌟 {staff_name}")
 
-display1, display2, display3 = st.columns([1, 2, 1])
+display1, display2 = st.columns([1, 2])
 
 with display1:
     # Display Image
