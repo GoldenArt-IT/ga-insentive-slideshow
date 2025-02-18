@@ -78,12 +78,12 @@ with display1:
         st.image(image, width=300) if image else st.write("🚫 No Image Available")
 
 with display2:
-    st.markdown("<h3 style='text-align: left;'>💰 Duit yang Di Terima</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: left;'>💰 Duit yang Di Terima !</h3>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: left;'> " f"RM {incentive_value:,.2f}" "</h1>", unsafe_allow_html=True)
     # st.metric(label="", value=f"${incentive_value:,.2f}")
     # st.metric(label="💰 Incentive Earned", value=f"${incentive_value:,.2f}")
 
-    st.markdown("<h3 style='text-align: left;'>📈 Total Duit dalam Department</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: left;'>📈 Total Duit dalam Department (" f"{department_value}" ") !</h3>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: left;'> " f"RM {department_incentive:,.2f}" "</h1>", unsafe_allow_html=True)
 
 # Buttons
