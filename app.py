@@ -59,7 +59,7 @@ st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
 st.sidebar.markdown("### ⏳ Auto-Slideshow")
 
 auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
-slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 5)
+slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 8)
 
 # Main Page View
 st.title("🏆 Top 10 Staff Terbaik GA !")
