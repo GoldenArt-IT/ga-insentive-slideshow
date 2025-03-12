@@ -34,7 +34,7 @@ def decode_image_display(base64_string):
     except Exception:
         return None
 
-# @st.cache_data
+@st.cache_data(ttl=86400)
 def get_image_url(url, max_width=200, quality=20):
     """Fetch and compress images from URLs."""
     try:
@@ -61,7 +61,7 @@ def get_image_url(url, max_width=200, quality=20):
     except:
         return None
 
-# @st.cache_data
+@st.cache_data(ttl=86400)
 def decode_image(base64_string, max_width=200, quality=20):
     """Convert Base64 string to a compressed image."""
     try:
@@ -163,6 +163,7 @@ with body_1:
             with st.container():
                 st.subheader("Total Duit Dept Kau!💰")
                 st.markdown("<h1 style='text-align: left;'> " f"RM {department_incentive:,.2f}" "</h1>", unsafe_allow_html=True)
+    st.divider()
 
 with body_2:
     with st.container():
@@ -231,6 +232,7 @@ with body_2:
                     st.image(image_list, width=80)
                 else:
                     st.write("🚫 No Images Available")
+    st.divider()
 
 # Auto-slide
 if auto_slide:
