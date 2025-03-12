@@ -94,9 +94,6 @@ st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
 
 st.sidebar.markdown("### ⏳ Auto-Slideshow")
 
-
-
-
 # Initialize session state for slideshow
 if "index" not in st.session_state:
     st.session_state.index = 0
@@ -192,41 +189,12 @@ with body_2:
                     st.subheader(f"{x+1}. {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}% (RM {INDEX_INCENTIVE})")
 
                 staff_image = df[df['DEPARTMENT'] == INDEX_DEPARTMENT]
-
-                # for y in range(len(staff_image)):
-                #     image_data = staff_image.iloc[y]["PICTURE"]
-                    
-                #     if pd.isna(image_data) or image_data.strip() == "":
-                #         st.write("🚫 No Image Available")
-                #     elif image_data.startswith("http"):
-                #         st.image(get_image_url(image_data), width=50)
-                #     else:
-                #         image = decode_image(image_data)
-                #         st.image(image, width=300) if image else st.write("🚫 No Image Available")
-
-                # for y, row in enumerate(staff_image.itertuples(index=False)):
-                #     image_data = row.PICTURE
-
-                #     if pd.isna(image_data) or not str(image_data).strip():
-                #         st.write(f"{y}: 🚫 No Image Available")
-                #     elif str(image_data).startswith("http"):
-                #         st.image(get_image_url(image_data), width=50, caption=f"Row {y}")
-                #     else:
-                #         image = decode_image(image_data)
-                #         st.image(image, width=300, caption=f"Row {y}") if image else st.write(f"{y}: 🚫 No Image Available")
-
-                # Prepare images list
                 valid_images = [
                     get_image_url(img) if str(img).startswith("http") else decode_image(img) 
                     if not pd.isna(img) and str(img).strip() != "" else None
                     for img in staff_image["PICTURE"]
                 ]
-
-                # Filter out None values (invalid images)
                 image_list = [img for img in valid_images if img is not None]
-                # caption_list = [staff_image.index[i] for i, img in enumerate(valid_images) if img is not None]
-
-                # Display only valid images
                 if image_list:
                     st.image(image_list, width=80)
                 else:
