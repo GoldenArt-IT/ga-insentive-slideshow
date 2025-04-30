@@ -8,7 +8,6 @@ from io import BytesIO
 from PIL import Image
 import requests
 import numpy as np
-from streamlit_autorefresh import st_autorefresh
 
 
 #----------------------------------------------------------BACKEND--------------------------------------------------------------
