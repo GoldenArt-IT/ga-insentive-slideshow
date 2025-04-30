@@ -17,5 +17,5 @@ A Streamlit app to display staff and department rankings based on Google Sheets 
 - **Image Handling**  
   - Fetch & compress images from URLs or Base64 strings.  
   - Supports Google Drive links and arbitrary URLs.  
-  - Displays via `st.image()`&#8203;:contentReference[oaicite:1]{index=1}.
+  - Displays via `st.image()`.
   
