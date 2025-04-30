@@ -88,12 +88,6 @@ df = df.sort_values(by="INCENTIVE", ascending=False).reset_index(drop=True)
 selected_departments = ['INTERIOR', 'WELDER', 'FRAME', 'FABRIC', 'SEWING', 'SPONGE', 'SPRAY', 'PACKING', 'ASSEMBLY', 'OUTDOOR']
 df = df[df['DEPARTMENT'].isin(selected_departments)]
 
-# Side Bar
-st.sidebar.header("📊 Staff Ranking")
-st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
-
-st.sidebar.markdown("### ⏳ Auto-Slideshow")
-
 # Initialize session state for slideshow
 if "index" not in st.session_state:
     st.session_state.index = 0
@@ -112,56 +106,43 @@ department_incentive = department_totals[department_totals["DEPARTMENT"] == depa
 #---------------------------------------------------------UI DESIGN-------------------------------------------------------------
 
 
-
-auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
-slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 10)
-
-segment_1, segment_2 = st.columns([5,5])
-with segment_1:
-    with st.container():
-        sac.segmented(
-            items=[
-                sac.SegmentedItem(label='THIS WEEK', icon='fire'),
-                sac.SegmentedItem(label='THIS MONTH', icon='water'),
-            ], align='center', size='sm', radius='xl'
-        )
-
-title_1, title_2 = st.columns([5,5])
+title_1, title_2, title_3 = st.columns([0.5,1,0.8])
 with title_1:
-    st.title("🏆 Top 10 Staff Terbaik !")
-with title_2:
-    st.title("🫣 Department Kau Perform Tak ?")
+    st.title("📊 Staff Ranking")
+    st.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
 
-body_1, body_2 = st.columns([5,5])
-with body_1:
+    with st.expander("Slideshow Enabler"):
+        auto_slide = st.checkbox("Enable Slideshow", value=True)
+        slide_delay = st.slider("Slide Delay (seconds)", 2, 10, 10)
+
+with title_2:
+    st.title("🏆 Top 10 Staff Terbaik !")
+
     with st.container():
         st.subheader(f"🌟 {staff_name}")
 
         with st.container():
 
-            col_1, col_2, col_3 = st.columns([0.5,1,0.5])
-            with col_2:
+            col_1, col_2, col_3 = st.columns([1,0.8,0.1])
+            with col_1:
 
                 # Display Image
                 if pd.isna(image_data) or image_data.strip() == "":
                     st.write("🚫 No Image Available")
                 elif image_data.startswith("http"):
-                    st.image(get_image_url_display(image_data), width=400)
+                    st.image(get_image_url_display(image_data), width=350)
                 else:
                     image = decode_image_display(image_data)
                     st.image(image, width=300) if image else st.write("🚫 No Image Available")
+            
+            with col_2:
+                for x in range(6):
+                    with st.container(border=True):
+                        st.text(x)
 
-        incentive_1, incentive_2 = st.columns([1,1])
-        with incentive_1:
-            with st.container():
-                st.subheader("Duit yang Kau Dapat! 💵")
-                st.markdown("<h1 style='text-align: left;'> " f"RM {incentive_value:,.2f}" "</h1>", unsafe_allow_html=True)
-        with incentive_2:
-            with st.container():
-                st.subheader("Total Duit Dept Kau!💰")
-                st.markdown("<h1 style='text-align: left;'> " f"RM {department_incentive:,.2f}" "</h1>", unsafe_allow_html=True)
+with title_3:
+    st.title("🚀 Department Ranking ?")
 
-with body_2:
     with st.container():
 
         department_table = pd.pivot_table(df, values='INCENTIVE', index=['DEPARTMENT'], aggfunc=np.sum)
