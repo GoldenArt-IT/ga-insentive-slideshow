@@ -179,13 +179,13 @@ with title_2:
                 # INDEX_INCENTIVE = staff_ranking_table.iloc[x][0] 
 
                 if x == 0:
-                    st.subheader(f"🥇 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
+                    st.markdown(f"""<h4>🥇 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%</h4>""", unsafe_allow_html=True)
                 if x == 1:
-                    st.subheader(f"🥈 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
+                    st.markdown(f"""<h4>🥈 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%</h4>""", unsafe_allow_html=True)
                 if x == 2:
-                    st.subheader(f"🥉 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
+                    st.markdown(f"""<h4>🥉 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%</h4>""", unsafe_allow_html=True)
                 elif x > 2:
-                    st.subheader(f"{x+1}. {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
+                    st.markdown(f"""<h4> {x+1}. {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%</h4>""", unsafe_allow_html=True)
 
                 staff_image = df[df['DEPARTMENT'] == INDEX_DEPARTMENT]
                 valid_images = [
@@ -195,7 +195,7 @@ with title_2:
                 ]
                 image_list = [img for img in valid_images if img is not None]
                 if image_list:
-                    st.image(image_list, width=80)
+                    st.image(image_list, width=70)
                 else:
                     st.write("🚫 No Images Available")
 
