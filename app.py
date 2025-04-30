@@ -7,7 +7,8 @@ import base64
 from io import BytesIO
 from PIL import Image
 import requests
-import numpy as np 
+import numpy as np
+from streamlit_autorefresh import st_autorefresh
 
 
 #----------------------------------------------------------BACKEND--------------------------------------------------------------
@@ -34,7 +35,7 @@ def decode_image_display(base64_string):
     except Exception:
         return None
 
-@st.cache_data(ttl=86400)
+@st.cache_data
 def get_image_url(url, max_width=200, quality=20):
     """Fetch and compress images from URLs."""
     try:
@@ -61,7 +62,7 @@ def get_image_url(url, max_width=200, quality=20):
     except:
         return None
 
-@st.cache_data(ttl=86400)
+@st.cache_data
 def decode_image(base64_string, max_width=200, quality=20):
     """Convert Base64 string to a compressed image."""
     try:
@@ -81,21 +82,12 @@ def decode_image(base64_string, max_width=200, quality=20):
 
 # Load Data
 conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read(worksheet="DATA", ttl=10)
+df = conn.read(worksheet="DATA", ttl=360)
 df = df.dropna(thresh=2)
-df = df.sort_values(by="INCENTIVE", ascending=False).reset_index(drop=True)
+df = df.sort_values(by="TOTAL GRADE %", ascending=False).reset_index(drop=True)
 
 selected_departments = ['INTERIOR', 'WELDER', 'FRAME', 'FABRIC', 'SEWING', 'SPONGE', 'SPRAY', 'PACKING', 'ASSEMBLY', 'OUTDOOR']
 df = df[df['DEPARTMENT'].isin(selected_departments)]
-
-# Side Bar
-st.sidebar.header("📊 Staff Ranking")
-st.sidebar.dataframe(df[['STAFF NAME', 'INCENTIVE', 'DEPARTMENT']])
-
-st.sidebar.markdown("### ⏳ Auto-Slideshow")
-
-
-
 
 # Initialize session state for slideshow
 if "index" not in st.session_state:
@@ -108,6 +100,14 @@ incentive_value = df.iloc[st.session_state.index]['INCENTIVE']
 department_value = df.iloc[st.session_state.index]['DEPARTMENT']
 incentive_value = 0.00 if pd.isna(incentive_value) else float(incentive_value)
 
+output_grade = df.iloc[st.session_state.index]["OUTPUT PARTICIPATION GRADE"]
+commitment_grade = df.iloc[st.session_state.index]["COMMITMENT ON TASK GRADE"]
+knowledge_grade = df.iloc[st.session_state.index]["KNOWLEDGE & QCQA GRADE"]
+attendance_grade = df.iloc[st.session_state.index]["ATTENDANCE GRADE"]
+communication_grade = df.iloc[st.session_state.index]["COMMUNICATION GRADE"]
+total_grade = df.iloc[st.session_state.index]["TOTAL GRADE"]
+happypoint_grade = df.iloc[st.session_state.index]["HAPPY POINTS BALANCE"]
+
 department_totals = df.groupby("DEPARTMENT")["INCENTIVE"].sum().reset_index()
 department_incentive = department_totals[department_totals["DEPARTMENT"] == department_value]["INCENTIVE"].values[0]
 
@@ -115,124 +115,90 @@ department_incentive = department_totals[department_totals["DEPARTMENT"] == depa
 #---------------------------------------------------------UI DESIGN-------------------------------------------------------------
 
 
+title_1, title_2 = st.columns([1,1])
 
-auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
-slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 10)
+st.sidebar.header("📊 Staff Ranking")
+st.sidebar.dataframe(df[['STAFF NAME', 'TOTAL GRADE']])
+with st.sidebar.expander("Slideshow Enabler"):
+    auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
+    slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 10)
 
-segment_1, segment_2 = st.columns([5,5])
-with segment_1:
-    with st.container():
-        sac.segmented(
-            items=[
-                sac.SegmentedItem(label='THIS WEEK', icon='fire'),
-                sac.SegmentedItem(label='THIS MONTH', icon='water'),
-            ], align='center', size='sm', radius='xl'
-        )
-
-title_1, title_2 = st.columns([5,5])
 with title_1:
-    st.title("🏆 Top 10 Staff Terbaik !")
-with title_2:
-    st.title("🫣 Department Kau Perform Tak ?")
+    st.markdown(f"""<h2>🏆 Top 10 Staff Terbaik !</h2>""", unsafe_allow_html=True)
 
-body_1, body_2 = st.columns([5,5])
-with body_1:
     with st.container():
         st.subheader(f"🌟 {staff_name}")
 
         with st.container():
 
-            col_1, col_2, col_3 = st.columns([0.5,1,0.5])
-            with col_2:
+            col_1, col_2 = st.columns([1,0.8])
+            with col_1:
 
                 # Display Image
                 if pd.isna(image_data) or image_data.strip() == "":
                     st.write("🚫 No Image Available")
                 elif image_data.startswith("http"):
-                    st.image(get_image_url_display(image_data), width=400)
+                    st.image(get_image_url_display(image_data), width=350)
                 else:
                     image = decode_image_display(image_data)
                     st.image(image, width=300) if image else st.write("🚫 No Image Available")
+            
+            with col_2:
 
-        incentive_1, incentive_2 = st.columns([1,1])
-        with incentive_1:
-            with st.container():
-                st.subheader("Duit yang Kau Dapat! 💵")
-                st.markdown("<h1 style='text-align: left;'> " f"RM {incentive_value:,.2f}" "</h1>", unsafe_allow_html=True)
-        with incentive_2:
-            with st.container():
-                st.subheader("Total Duit Dept Kau!💰")
-                st.markdown("<h1 style='text-align: left;'> " f"RM {department_incentive:,.2f}" "</h1>", unsafe_allow_html=True)
-    st.divider()
+                grade_title_map = ["GRED OUTPUT", "GRED KOMITMEN", "GRED ILMU & QCQA", "GRED KEHADIRAN", "GRED KOMUNIKASI", "TOTAL GRADE", "JUMLAH HAPPY POINTS !"]
+                grade_map = [output_grade, commitment_grade, knowledge_grade, attendance_grade, commitment_grade, total_grade, str(happypoint_grade)]
+                for x in range(5):
+                    with st.container(border=True):
 
-with body_2:
+                        if grade_map[x] == "S":
+                            st.markdown(f"**{grade_title_map[x]}** : 🔥 **{grade_map[x]}**")
+                        elif grade_map[x] == "F":
+                            st.markdown(f"**{grade_title_map[x]}** : 🔴 :red-background[**{grade_map[x]}**]")
+                        elif grade_map[x] == "A":
+                            st.markdown(f"**{grade_title_map[x]}** : 🔵 **{grade_map[x]}**")
+                        else:
+                            st.markdown(f"**{grade_title_map[x]}** : **{grade_map[x]}**")
+
+
+with title_2:
+    st.markdown(f"""<h2>🚀 Department Ranking !</h2>""", unsafe_allow_html=True)
+    
     with st.container():
-
-        department_table = pd.pivot_table(df, values='INCENTIVE', index=['DEPARTMENT'], aggfunc=np.sum)
+        department_table = pd.pivot_table(df, values='TOTAL GRADE %', index=['DEPARTMENT'], aggfunc=np.sum)
         staff_table = pd.pivot_table(df, values='STAFF NAME', index=['DEPARTMENT'], aggfunc="count")
         staff_table = staff_table.rename(columns={"STAFF NAME": "STAFF COUNT"})
         staff_ranking_table = department_table.merge(staff_table, on="DEPARTMENT", how="outer").fillna(0)
-        staff_ranking_table["Avg Incentive per Staff"] = staff_ranking_table["INCENTIVE"] / staff_ranking_table["STAFF COUNT"]
-        total_avg_incentive = staff_ranking_table["Avg Incentive per Staff"].sum()
-        staff_ranking_table["Fair Incentive Percentage"] = (staff_ranking_table ["Avg Incentive per Staff"] / total_avg_incentive) * 100
-        staff_ranking_table = staff_ranking_table.sort_values(by=['Fair Incentive Percentage'], ascending=False)
+        staff_ranking_table["Avg Percentage per Staff"] = staff_ranking_table["TOTAL GRADE %"] / staff_ranking_table["STAFF COUNT"]
+        total_avg_incentive = staff_ranking_table["Avg Percentage per Staff"].sum()
+        staff_ranking_table["Department Percentage"] = (staff_ranking_table ["Avg Percentage per Staff"] / total_avg_incentive) * 100
+        staff_ranking_table = staff_ranking_table.sort_values(by=['Department Percentage'], ascending=False)
 
         for x in range(3):
             with st.container(border=True):
                 INDEX_DEPARTMENT = staff_ranking_table.index[x]
                 INDEX_PERCENTAGE = round(staff_ranking_table.iloc[x][-1], 2)
-                INDEX_INCENTIVE = staff_ranking_table.iloc[x][0] 
+                # INDEX_INCENTIVE = staff_ranking_table.iloc[x][0] 
 
                 if x == 0:
-                    st.subheader(f"🥇 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}% (RM {INDEX_INCENTIVE})")
+                    st.subheader(f"🥇 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
                 if x == 1:
-                    st.subheader(f"🥈 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}% (RM {INDEX_INCENTIVE})")
+                    st.subheader(f"🥈 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
                 if x == 2:
-                    st.subheader(f"🥉 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}% (RM {INDEX_INCENTIVE})")
+                    st.subheader(f"🥉 {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
                 elif x > 2:
-                    st.subheader(f"{x+1}. {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}% (RM {INDEX_INCENTIVE})")
+                    st.subheader(f"{x+1}. {INDEX_DEPARTMENT} - {INDEX_PERCENTAGE}%")
 
                 staff_image = df[df['DEPARTMENT'] == INDEX_DEPARTMENT]
-
-                # for y in range(len(staff_image)):
-                #     image_data = staff_image.iloc[y]["PICTURE"]
-                    
-                #     if pd.isna(image_data) or image_data.strip() == "":
-                #         st.write("🚫 No Image Available")
-                #     elif image_data.startswith("http"):
-                #         st.image(get_image_url(image_data), width=50)
-                #     else:
-                #         image = decode_image(image_data)
-                #         st.image(image, width=300) if image else st.write("🚫 No Image Available")
-
-                # for y, row in enumerate(staff_image.itertuples(index=False)):
-                #     image_data = row.PICTURE
-
-                #     if pd.isna(image_data) or not str(image_data).strip():
-                #         st.write(f"{y}: 🚫 No Image Available")
-                #     elif str(image_data).startswith("http"):
-                #         st.image(get_image_url(image_data), width=50, caption=f"Row {y}")
-                #     else:
-                #         image = decode_image(image_data)
-                #         st.image(image, width=300, caption=f"Row {y}") if image else st.write(f"{y}: 🚫 No Image Available")
-
-                # Prepare images list
                 valid_images = [
                     get_image_url(img) if str(img).startswith("http") else decode_image(img) 
                     if not pd.isna(img) and str(img).strip() != "" else None
                     for img in staff_image["PICTURE"]
                 ]
-
-                # Filter out None values (invalid images)
                 image_list = [img for img in valid_images if img is not None]
-                # caption_list = [staff_image.index[i] for i, img in enumerate(valid_images) if img is not None]
-
-                # Display only valid images
                 if image_list:
                     st.image(image_list, width=80)
                 else:
                     st.write("🚫 No Images Available")
-    st.divider()
 
 # Auto-slide
 if auto_slide:
