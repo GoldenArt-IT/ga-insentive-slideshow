@@ -13,9 +13,9 @@ A Streamlit app to display staff and department rankings based on Google Sheets 
   - Ranks departments by average “TOTAL GRADE %”.  
   - Displays top 3 with small team photos.  
 - **Google Sheets Integration**  
-  - Read and write CRUD via `GSheetsConnection`&#8203;:contentReference[oaicite:0]{index=0}.  
+  - Read and write CRUD via `GSheetsConnection`.  
 - **Image Handling**  
   - Fetch & compress images from URLs or Base64 strings.  
   - Supports Google Drive links and arbitrary URLs.  
-  - Displays via `st.image()`&#8203;:contentReference[oaicite:1]{index=1}.
+  - Displays via `st.image()`.
   
