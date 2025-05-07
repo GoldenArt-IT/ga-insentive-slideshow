@@ -12,7 +12,7 @@ import numpy as np
 
 #----------------------------------------------------------BACKEND--------------------------------------------------------------
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 def get_image_url_display(url):
     """Convert Google Drive link to a direct image URL."""
@@ -117,7 +117,7 @@ department_incentive = department_totals[department_totals["DEPARTMENT"] == depa
 title_1, title_2 = st.columns([1,1])
 
 st.sidebar.header("📊 Staff Ranking")
-st.sidebar.dataframe(df[['STAFF NAME', 'TOTAL GRADE']])
+st.sidebar.dataframe(df[['STAFF NAME', 'TOTAL GRADE', 'TOTAL GRADE %']])
 with st.sidebar.expander("Slideshow Enabler"):
     auto_slide = st.sidebar.checkbox("Enable Slideshow", value=True)
     slide_delay = st.sidebar.slider("Slide Delay (seconds)", 2, 10, 10)
@@ -144,9 +144,9 @@ with title_1:
             
             with col_2:
 
-                grade_title_map = ["GRED OUTPUT", "GRED KOMITMEN", "GRED ILMU & QCQA", "GRED KEHADIRAN", "GRED KOMUNIKASI", "TOTAL GRADE", "JUMLAH HAPPY POINTS !"]
+                grade_title_map = ["GRED OUTPUT", "GRED KOMITMEN", "GRED ILMU & QCQA", "GRED KEHADIRAN", "GRED KOMUNIKASI", "GRED KESELURUHAN", "HAPPY POINTS !"]
                 grade_map = [output_grade, commitment_grade, knowledge_grade, attendance_grade, commitment_grade, total_grade, str(happypoint_grade)]
-                for x in range(5):
+                for x in range(7):
                     with st.container(border=True):
 
                         if grade_map[x] == "S":
