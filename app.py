@@ -148,7 +148,6 @@ with title_1:
                 grade_map = [output_grade, commitment_grade, knowledge_grade, attendance_grade, commitment_grade, total_grade, str(happypoint_grade)]
                 for x in range(7):
                     with st.container(height=30):
-
                         if grade_map[x] == "S": st.markdown(f"**{grade_title_map[x]}** : 🔥 **{grade_map[x]}**")
                         elif grade_map[x] == "F": st.markdown(f"**{grade_title_map[x]}** : 🔴 :red-background[**{grade_map[x]}**]")
                         elif grade_map[x] == "A": st.markdown(f"**{grade_title_map[x]}** : 🔵 **{grade_map[x]}**")
@@ -170,7 +169,7 @@ with title_2:
         staff_ranking_table = staff_ranking_table.sort_values(by=['Department Percentage'], ascending=False)
 
         for x in range(3):
-            with st.container(height=140):
+            with st.container(height=120):
                 INDEX_DEPARTMENT = staff_ranking_table.index[x]
                 INDEX_PERCENTAGE = round(staff_ranking_table.iloc[x][-1], 2)
                 # INDEX_INCENTIVE = staff_ranking_table.iloc[x][0] 
